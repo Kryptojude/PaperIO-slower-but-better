@@ -7,11 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SimpleTCP;
 
 namespace Paper.io
 {
     public partial class Form1 : Form
     {
+        SimpleTcpServer server;
+
         public const int ts = 30;
         Rectangle[,] canvas = new Rectangle[30, 50];
 
@@ -35,6 +38,10 @@ namespace Paper.io
         public Form1()
         {
             InitializeComponent();
+
+            // Server stuff
+            server = new SimpleTcpServer();
+            server.DataReceived += Server_DataReceived;
 
             //Tell Player instances what the other player is
             players[0].otherP = players[1];
@@ -60,8 +67,22 @@ namespace Paper.io
 
             Timer timer = new Timer { Interval = 100, Enabled = true };
             timer.Tick += Timer_Tick;
-            Paint += Form1_Paint;
-            KeyDown += Form1_KeyPress;
+        }
+
+        private void Server_DataReceived(object sender, SimpleTCP.Message e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Start_click(object sender, EventArgs e)
+        {
+            //System.Net.IPAddress ip = System.Net.IPAddress.Parse(Host_textbox.Text);
+            //server.Start(ip, Convert.ToInt32(Port_textbox.Text));
+        }
+
+        private void Stop_click(object sender, EventArgs e)
+        {
+
         }
 
         private void Form1_KeyPress(object sender, KeyEventArgs e)
@@ -120,45 +141,45 @@ namespace Paper.io
             }
         }
 
-        private void Form1_Paint(object sender, PaintEventArgs e)
-        {
-            ////Draw canvas
-            //for (int y = 0; y < canvas.GetLength(0); y++)
-            //{
-            //    for (int x = 0; x < canvas.GetLength(1); x++)
-            //    {
-            //        e.Graphics.DrawRectangle(Pens.Black, canvas[y, x]);
-            //    }
-            //}
-            //Draw player area
-            foreach (Player player in players)
-            {
-                foreach (Rectangle rec in player.area)
-                {
-                    e.Graphics.FillRectangle(new SolidBrush(player.color[1]), rec);
-                }
-            }
-            foreach (Player player in players)
-            {
-                //Draw player line
-                for (int r = 0; r < player.line.Count; r++)
-                {
-                    e.Graphics.FillRectangle(new SolidBrush(player.color[2]), player.line[r]);
-                }
-                //Draw Player
-                e.Graphics.FillRectangle(new SolidBrush(player.color[0]), player.rec);
-                //Draw temp recs
-                foreach (Rectangle rec in player.temp)
-                {
-                    e.Graphics.FillRectangle(Brushes.Red, rec);
-                }
-            }
-            //Draw scores
-            foreach (Player player in players)
-            {
-                e.Graphics.DrawString(player.area.Count.ToString(), Font, Brushes.Red, player.number * (Width - 90) , 0);
-            }
-        }
+        //private void Form1_Paint(object sender, PaintEventArgs e)
+        //{
+        //    ////Draw canvas
+        //    //for (int y = 0; y < canvas.GetLength(0); y++)
+        //    //{
+        //    //    for (int x = 0; x < canvas.GetLength(1); x++)
+        //    //    {
+        //    //        e.Graphics.DrawRectangle(Pens.Black, canvas[y, x]);
+        //    //    }
+        //    //}
+        //    //Draw player area
+        //    foreach (Player player in players)
+        //    {
+        //        foreach (Rectangle rec in player.area)
+        //        {
+        //            e.Graphics.FillRectangle(new SolidBrush(player.color[1]), rec);
+        //        }
+        //    }
+        //    foreach (Player player in players)
+        //    {
+        //        //Draw player line
+        //        for (int r = 0; r < player.line.Count; r++)
+        //        {
+        //            e.Graphics.FillRectangle(new SolidBrush(player.color[2]), player.line[r]);
+        //        }
+        //        //Draw Player
+        //        e.Graphics.FillRectangle(new SolidBrush(player.color[0]), player.rec);
+        //        //Draw temp recs
+        //        foreach (Rectangle rec in player.temp)
+        //        {
+        //            e.Graphics.FillRectangle(Brushes.Red, rec);
+        //        }
+        //    }
+        //    //Draw scores
+        //    foreach (Player player in players)
+        //    {
+        //        e.Graphics.DrawString(player.area.Count.ToString(), Font, Brushes.Red, player.number * (Width - 90), 0);
+        //    }
+        //}
 
         private void Timer_Tick(object sender, EventArgs e)
         {
